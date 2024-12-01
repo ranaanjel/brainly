@@ -1,0 +1,34 @@
+{
+  "dependencies": {
+    "@types/express": "^5.0.0",
+    "bcrypt": "^5.1.1",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.8.3",
+    "typescript": "^5.7.2",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.7"
+  },
+  "name": "brainly_backend",
+  "version": "1.0.0",
+  "description": "backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build":"npx tsc -b",
+    "exec" : "node ./dist/index.js",
+    "dev":"npm run build && npm run exec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ranaanjel/brainly.git"
+  },
+  "author": "a01z",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ranaanjel/brainly/issues"
+  },
+  "homepage": "https://github.com/ranaanjel/brainly#readme"
+}
