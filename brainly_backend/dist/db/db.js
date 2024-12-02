@@ -58,7 +58,7 @@ const ShareLinkSchema = new mongoose_1.Schema({
     hash: { type: String, required: true
     },
     userId: {
-        type: mongoose_1.Types.ObjectId, required: true, ref: "User"
+        type: mongoose_1.Types.ObjectId, required: true, ref: "User", unique: true
     }
 });
 exports.ShareLinkModel = (0, mongoose_1.model)("ShareLink", ShareLinkSchema);

@@ -8,8 +8,9 @@ import jwt from "jsonwebtoken"
 import { authMiddleware } from "../middlewares/authMiddlewares";
 import {tagMiddleware} from "../middlewares/tagMiddleware"
 import { isConstructorDeclaration } from "typescript";
-import { Types } from "mongoose";
+import { ObjectId, Types } from "mongoose";
 import { defaultErrorMap } from "zod";
+import crypto from "crypto"
 
 const jwtSecret:string = String(process.env.JWT_SECRET);
 
@@ -100,7 +101,7 @@ interface contentValues {
 userRouter.post("/content", authMiddleware, tagMiddleware,async function (req:Request, res:Response) { 
 
     let {link, title, tag, type} : contentValues = req.body;
-    console.log(link, title, tag, type)
+    //console.log(link, title, tag, type)
 
     // getting the reference for each tag if not present creating one.
 
@@ -109,7 +110,7 @@ userRouter.post("/content", authMiddleware, tagMiddleware,async function (req:Re
         const content = await ContentModel.create({
             link, title, type, tag, userId:req.userId
         })
-        console.log(content)
+        //console.log(content)
         res.json({
             content
         })
@@ -149,28 +150,65 @@ userRouter.delete("/content", authMiddleware,async function (req:Request, res:Re
 //share the content i.e visible to others
 
 //sharing the particular content i.e all notes, tweets or videos and tags values
-userRouter.post("/brain/share", authMiddleware,function (req:Request, res:Response) {
+userRouter.post("/brain/share", authMiddleware, async function (req:Request, res:Response) {
     let {share} : {share:boolean} = req.body;
-
+    let userId = req.userId;
+    try {
     if(share) {
-        
-        
+        const hash = crypto.createHash("sha256").update(userId as string).digest("hex");
+        const link = await ShareLinkModel.create({
+            hash,
+            userId
+        })
+        let URL = ( req.protocol+"//:"+ req.get("host")+"/brain/"+ link.hash)
         
         res.json({
+            URL,
             message:"content shared"
         })
         return;
+    } else {
+        // meaning to delete the shareable URL meaning does not existing in the sharelinks document
+        //assuming that whole second brain is shared not pieces of it.
+        await ShareLinkModel.deleteOne({
+            userId
+        })
+
+        res.json({
+            message:"not shared anymore"
+        })
+    }}
+    catch(err) {
+        res.json({message:"already shareable"})
     }
 
-
-    res.json({
-        message:"content not shared"
-    })
 })
 
 //copying the particular content of others
-userRouter.get("/brain/:shareLink", authMiddleware,function (req:Request, res:Response) {
+userRouter.get("/brain/:shareLink", authMiddleware,async function (req:Request, res:Response) {
+    let hash = req.params.shareLink;
+    let userId = req.userId;
+
+   let hashValue =await ShareLinkModel.findOne({
+    hash
+   }).populate("userId");
+
+   if(hashValue == null) {
+    res.status(404).json({
+        message:"no such content exist"
+    })
+    return;
+   }
+
+   //@ts-ignore
+   const username = hashValue.userId.name;
+   const content = await ContentModel.find({userId})
+
+   
     res.json({
+        value : {
+          username, content
+        },
         message:"content share copy from others"
     })
 })

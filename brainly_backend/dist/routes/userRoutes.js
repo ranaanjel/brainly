@@ -22,6 +22,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const authMiddlewares_1 = require("../middlewares/authMiddlewares");
 const tagMiddleware_1 = require("../middlewares/tagMiddleware");
+const crypto_1 = __importDefault(require("crypto"));
 const jwtSecret = String(process.env.JWT_SECRET);
 userRouter.get("/", function (req, res) {
     res.redirect("/user/content");
@@ -92,14 +93,14 @@ var contentTypes;
 userRouter.post("/content", authMiddlewares_1.authMiddleware, tagMiddleware_1.tagMiddleware, function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let { link, title, tag, type } = req.body;
-        console.log(link, title, tag, type);
+        //console.log(link, title, tag, type)
         // getting the reference for each tag if not present creating one.
         try {
             console.log("before tag check");
             const content = yield db_1.ContentModel.create({
                 link, title, type, tag, userId: req.userId
             });
-            console.log(content);
+            //console.log(content)
             res.json({
                 content
             });
@@ -126,7 +127,8 @@ userRouter.get("/content", authMiddlewares_1.authMiddleware, function (req, res)
 userRouter.delete("/content", authMiddlewares_1.authMiddleware, function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let contentId = req.body.contentId;
-        yield db_1.ContentModel.deleteOne({ _id: contentId, userId: req.userId });
+        let deleteContent = yield db_1.ContentModel.deleteOne({ _id: contentId, userId: req.userId });
+        //console.log(contentId, req.userId, deleteContent)
         res.json({
             message: "deleted the content"
         });
@@ -135,14 +137,62 @@ userRouter.delete("/content", authMiddlewares_1.authMiddleware, function (req, r
 //share the content i.e visible to others
 //sharing the particular content i.e all notes, tweets or videos and tags values
 userRouter.post("/brain/share", authMiddlewares_1.authMiddleware, function (req, res) {
-    res.json({
-        message: "content share our"
+    return __awaiter(this, void 0, void 0, function* () {
+        let { share } = req.body;
+        let userId = req.userId;
+        try {
+            if (share) {
+                const hash = crypto_1.default.createHash("sha256").update(userId).digest("hex");
+                const link = yield db_1.ShareLinkModel.create({
+                    hash,
+                    userId
+                });
+                let URL = (req.protocol + "//:" + req.get("host") + "/brain/" + link.hash);
+                res.json({
+                    URL,
+                    message: "content shared"
+                });
+                return;
+            }
+            else {
+                // meaning to delete the shareable URL meaning does not existing in the sharelinks document
+                //assuming that whole second brain is shared not pieces of it.
+                yield db_1.ShareLinkModel.deleteOne({
+                    userId
+                });
+                res.json({
+                    message: "not shared anymore"
+                });
+            }
+        }
+        catch (err) {
+            res.json({ message: "already shareable" });
+        }
     });
 });
 //copying the particular content of others
 userRouter.get("/brain/:shareLink", authMiddlewares_1.authMiddleware, function (req, res) {
-    res.json({
-        message: "content share copy from others"
+    return __awaiter(this, void 0, void 0, function* () {
+        let hash = req.params.shareLink;
+        let userId = req.userId;
+        let hashValue = yield db_1.ShareLinkModel.findOne({
+            hash
+        }).populate("userId");
+        if (hashValue == null) {
+            res.status(404).json({
+                message: "no such content exist"
+            });
+            return;
+        }
+        //@ts-ignore
+        const username = hashValue.userId.name;
+        const content = yield db_1.ContentModel.find({ userId });
+        res.json({
+            value: {
+                username, content
+            },
+            message: "content share copy from others"
+        });
     });
 });
 //handling in case of other pages request

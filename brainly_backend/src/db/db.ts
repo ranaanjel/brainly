@@ -29,7 +29,7 @@ const ShareLinkSchema = new Schema({
         :true
     },
     userId:{
-        type:Types.ObjectId, required:true, ref:"User"
+        type:Types.ObjectId, required:true, ref:"User", unique:true
     }
 })
 export const ShareLinkModel = model("ShareLink", ShareLinkSchema)
