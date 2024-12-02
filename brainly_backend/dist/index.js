@@ -9,6 +9,12 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const userRoutes_1 = require("./routes/userRoutes");
 const app = (0, express_1.default)();
+//mongoose connection
+const mongoose_1 = __importDefault(require("mongoose"));
+let databaseURL = process.env.DATABASE_URL;
+mongoose_1.default.connect(databaseURL + "brainly").then(function () {
+    console.log("connected to database");
+});
 app.use((0, cors_1.default)());
 //body parsing - converting the bytes to json
 app.use(express_1.default.json());

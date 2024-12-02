@@ -2,10 +2,14 @@ import express, { urlencoded } from "express"
 import { Request, Response, NextFunction } from "express";
 import { inputValid } from "../middlewares/validMiddleware";
 const userRouter = express.Router();
-import { UserModel } from "../db/db";
+import { ContentModel, TagModel, UserModel, ShareLinkModel } from "../db/db";
 import bcrypt, { hash } from "bcrypt"
 import jwt from "jsonwebtoken"
 import { authMiddleware } from "../middlewares/authMiddlewares";
+import {tagMiddleware} from "../middlewares/tagMiddleware"
+import { isConstructorDeclaration } from "typescript";
+import { Types } from "mongoose";
+import { defaultErrorMap } from "zod";
 
 const jwtSecret:string = String(process.env.JWT_SECRET);
 
@@ -17,6 +21,7 @@ interface UserBody {
     name:string,
     password:string
 }
+
 
 userRouter.post("/signup",inputValid, async function (req:Request, res:Response) {
     let userBody : UserBody= req.body;
@@ -77,32 +82,89 @@ userRouter.post("/signin",async function (req:Request, res:Response) {
 })
 
 //content related
-userRouter.get("/content", authMiddleware,  function (req:Request, res:Response) { 
+export enum contentTypes {
+    image="image",
+    video="video",
+    article="article",
+    audio="audio"
+}
 
-    res.json({
-        message:"content get"
-    })
+interface contentValues {
+    link : string,
+    title:string,
+    tag:string[],
+    type: contentTypes,
+    //user id will added to the content separately 
+}
+
+userRouter.post("/content", authMiddleware, tagMiddleware,async function (req:Request, res:Response) { 
+
+    let {link, title, tag, type} : contentValues = req.body;
+    console.log(link, title, tag, type)
+
+    // getting the reference for each tag if not present creating one.
+
+    try {
+        console.log("before tag check")
+        const content = await ContentModel.create({
+            link, title, type, tag, userId:req.userId
+        })
+        console.log(content)
+        res.json({
+            content
+        })
+    } catch(err) {
+        console.log(err)
+        res.status(500).json({
+            message:"server not able to store the content"
+        })
+    }
 })
-userRouter.post("/content", authMiddleware,function (req:Request, res:Response) {
+userRouter.get("/content", authMiddleware, async function (req:Request, res:Response) {
 
-    res.json({
-        message:"content post"
+    const userId = req.userId;
+
+    const contents = await ContentModel.find({
+        userId
     })
- })
-userRouter.delete("/content", authMiddleware,function (req:Request, res:Response) {
     
     res.json({
-        message:"content delete"
+        contents
     })
+
+
+ })
+userRouter.delete("/content", authMiddleware,async function (req:Request, res:Response) {
+    
+    let contentId = req.body.contentId;
+
+    let deleteContent = await ContentModel.deleteOne({_id:contentId, userId:req.userId})
+    //console.log(contentId, req.userId, deleteContent)
+    res.json({
+        message:"deleted the content"
+    })
+    
  })
 
 //share the content i.e visible to others
 
 //sharing the particular content i.e all notes, tweets or videos and tags values
 userRouter.post("/brain/share", authMiddleware,function (req:Request, res:Response) {
+    let {share} : {share:boolean} = req.body;
+
+    if(share) {
+        
+        
+        
+        res.json({
+            message:"content shared"
+        })
+        return;
+    }
+
 
     res.json({
-        message:"content share our"
+        message:"content not shared"
     })
 })
 

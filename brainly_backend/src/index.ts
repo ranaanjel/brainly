@@ -4,9 +4,15 @@ dotenv.config()
 import express, { NextFunction, Request, Response,ErrorRequestHandler } from "express";
 import cors from "cors"
 import { userRouter } from "./routes/userRoutes";
-
 const app = express();
 
+//mongoose connection
+import mongoose from "mongoose";
+let databaseURL = process.env.DATABASE_URL
+ 
+mongoose.connect(databaseURL + "brainly").then( function () {
+console.log("connected to database")
+})
 app.use(cors())
 //body parsing - converting the bytes to json
 app.use(express.json())

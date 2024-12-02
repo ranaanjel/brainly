@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userRouter = void 0;
+exports.userRouter = exports.contentTypes = void 0;
 const express_1 = __importDefault(require("express"));
 const validMiddleware_1 = require("../middlewares/validMiddleware");
 const userRouter = express_1.default.Router();
@@ -21,6 +21,7 @@ const db_1 = require("../db/db");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const authMiddlewares_1 = require("../middlewares/authMiddlewares");
+const tagMiddleware_1 = require("../middlewares/tagMiddleware");
 const jwtSecret = String(process.env.JWT_SECRET);
 userRouter.get("/", function (req, res) {
     res.redirect("/user/content");
@@ -81,19 +82,54 @@ userRouter.post("/signin", function (req, res) {
     });
 });
 //content related
-userRouter.get("/content", authMiddlewares_1.authMiddleware, function (req, res) {
-    res.json({
-        message: "content get"
+var contentTypes;
+(function (contentTypes) {
+    contentTypes["image"] = "image";
+    contentTypes["video"] = "video";
+    contentTypes["article"] = "article";
+    contentTypes["audio"] = "audio";
+})(contentTypes || (exports.contentTypes = contentTypes = {}));
+userRouter.post("/content", authMiddlewares_1.authMiddleware, tagMiddleware_1.tagMiddleware, function (req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let { link, title, tag, type } = req.body;
+        console.log(link, title, tag, type);
+        // getting the reference for each tag if not present creating one.
+        try {
+            console.log("before tag check");
+            const content = yield db_1.ContentModel.create({
+                link, title, type, tag, userId: req.userId
+            });
+            console.log(content);
+            res.json({
+                content
+            });
+        }
+        catch (err) {
+            console.log(err);
+            res.status(500).json({
+                message: "server not able to store the content"
+            });
+        }
     });
 });
-userRouter.post("/content", authMiddlewares_1.authMiddleware, function (req, res) {
-    res.json({
-        message: "content post"
+userRouter.get("/content", authMiddlewares_1.authMiddleware, function (req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const userId = req.userId;
+        const contents = yield db_1.ContentModel.find({
+            userId
+        });
+        res.json({
+            contents
+        });
     });
 });
 userRouter.delete("/content", authMiddlewares_1.authMiddleware, function (req, res) {
-    res.json({
-        message: "content delete"
+    return __awaiter(this, void 0, void 0, function* () {
+        let contentId = req.body.contentId;
+        yield db_1.ContentModel.deleteOne({ _id: contentId, userId: req.userId });
+        res.json({
+            message: "deleted the content"
+        });
     });
 });
 //share the content i.e visible to others

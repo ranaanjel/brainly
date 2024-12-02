@@ -33,17 +33,32 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ContentModel = exports.UserModel = void 0;
+exports.ShareLinkModel = exports.TagModel = exports.ContentModel = exports.UserModel = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-let databaseURL = process.env.DATABASE_URL;
-console.log(databaseURL);
-mongoose_1.default.connect(databaseURL + "brainly").then(function (err) {
-    console.log("connected to database");
-});
-const userSchema = new mongoose_1.default.Schema({
+const userRoutes_1 = require("../routes/userRoutes");
+const UserSchema = new mongoose_1.default.Schema({
     name: { type: String, required: true, unique: true },
     password: { type: String, required: true }
 });
-exports.UserModel = mongoose_1.default.model("User", userSchema);
-const ContentSchema = new mongoose_1.Schema();
+exports.UserModel = mongoose_1.default.model("User", UserSchema);
+const ContentSchema = new mongoose_1.Schema({
+    title: { type: String, required: true },
+    link: { type: String, required: true },
+    type: { type: String, enum: userRoutes_1.contentTypes, required: true },
+    tag: [{ type: mongoose_1.Types.ObjectId, ref: "Tag" }],
+    userId: { type: mongoose_1.Types.ObjectId, ref: "User", required: true }
+});
 exports.ContentModel = (0, mongoose_1.model)("Content", ContentSchema);
+const TagSchema = new mongoose_1.Schema({
+    title: { type: String, unique: true, required: true }
+});
+exports.TagModel = (0, mongoose_1.model)("Tag", TagSchema);
+//sharing all the contents
+const ShareLinkSchema = new mongoose_1.Schema({
+    hash: { type: String, required: true
+    },
+    userId: {
+        type: mongoose_1.Types.ObjectId, required: true, ref: "User"
+    }
+});
+exports.ShareLinkModel = (0, mongoose_1.model)("ShareLink", ShareLinkSchema);
