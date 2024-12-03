@@ -30,7 +30,7 @@ export  function Card(props:cardProps) {
    const LazyYT = lazy(() => import("./YTEmbed"))
 
 
-    return <div className="bg-white shadow-md rounded-md border border-gray-300 w-96 h-96 min-w-64 p-4">
+    return <div className="bg-white shadow-md rounded-md border border-gray-300 w-96 h-96 min-w-64 p-4 hover:shadow-2xl">
         <div className="flex items-center justify-between ">
             {/* //title - two child -  */}
             <div className="flex gap-3 font-serif items-center text-slate-700">
@@ -71,7 +71,9 @@ export  function Card(props:cardProps) {
                 props.type == "tw" && <TWEmbed link={props.link}/>
             }
             {
-                props.type == "docs" && <p>documents information
+                props.type == "docs" && <p>{props.title}
+                <br/>
+                {props.type}
                     <SkeletonDiv/>
                 </p>
             }
