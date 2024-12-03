@@ -7,9 +7,6 @@ import bcrypt, { hash } from "bcrypt"
 import jwt from "jsonwebtoken"
 import { authMiddleware } from "../middlewares/authMiddlewares";
 import {tagMiddleware} from "../middlewares/tagMiddleware"
-import { isConstructorDeclaration } from "typescript";
-import { ObjectId, Types } from "mongoose";
-import { defaultErrorMap } from "zod";
 import crypto from "crypto"
 
 const jwtSecret:string = String(process.env.JWT_SECRET);
