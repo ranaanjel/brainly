@@ -17,7 +17,7 @@ export function Sidebar() {
     </div>
 }
 
-function SideBarItems({text, startIcon, variant}:{text:string, startIcon:ReactElement | string, variant: "header" | "item" }) {
+export function SideBarItems({text, startIcon, variant}:{text:string, startIcon:ReactElement | string, variant: "header" | "item" }) {
 
     return <div >
         {variant == "header"&& <div className="flex gap-2 items-center mb-6"> 

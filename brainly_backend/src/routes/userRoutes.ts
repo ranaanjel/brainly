@@ -182,7 +182,7 @@ userRouter.post("/brain/share", authMiddleware, async function (req:Request, res
 })
 
 //copying the particular content of others
-userRouter.get("/brain/:shareLink", authMiddleware,async function (req:Request, res:Response) {
+userRouter.get("/brain/:shareLink", async function (req:Request, res:Response) {
     let hash = req.params.shareLink;
     let userId = req.userId;
 

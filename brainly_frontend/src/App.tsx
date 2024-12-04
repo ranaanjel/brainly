@@ -1,11 +1,20 @@
 import Dashboard from "./pages/dashboard"
+import { Signin } from "./pages/signin"
 import { Signup } from "./pages/signup"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 function App() {
 
   // const LazyElement = lazy(()=> import("./components/ui/YTEmbed"))
   return <div>
-    <Signup/>
+      <BrowserRouter>
+        <Routes>
+          <Route index path="/"element={<Signin/>} ></Route>
+          <Route path="/signup" element={<Signup/>}></Route>
+          <Route path="/dashboard" element={<Dashboard/>}></Route>
+        </Routes>
+      </BrowserRouter>
+      
   </div>
 }
 

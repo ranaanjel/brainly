@@ -1,6 +1,7 @@
 import { CloseIcon } from "../icons/close"
 import { Button } from "./Button"
 import { MutableRefObject, useRef } from "react"
+import {InputComponent} from "./input"
 interface AddModalProps {
     open:boolean,
     onClose?:() => void
@@ -36,12 +37,5 @@ export function AddModal({open, onClose}:AddModalProps) {
                 </div>
             </div>
      </div>}
-    </div>
-}
-
-function InputComponent({changeHandler, placeholder}:{changeHandler?:()=> void, placeholder:string}) {
-
-    return <div>
-        <input type="text" className="py-2 px-4 border rounded border-slate-800 " onChange={changeHandler} placeholder={placeholder}/>
     </div>
 }
