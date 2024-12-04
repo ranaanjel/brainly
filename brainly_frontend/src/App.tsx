@@ -6,23 +6,33 @@ import { Button } from './components/ui/Button'
 import { Card } from './components/ui/card'
 import brainImage from "./assets/brain.png"
 
-import { Suspense, lazy } from 'react'
-
-
+import { AddModal } from './components/ui/AddModal'
+import { useState } from 'react'
+import { Sidebar } from './components/ui/SideBar'
 
 
 function App() {
 
   // const LazyElement = lazy(()=> import("./components/ui/YTEmbed"))
 
-  return <div className=" h-auto py-8 px-28 space-y-3.5 scroll-smooth overscroll-contain overflow-scroll">
+  const [open, setClose] = useState(false)
+
+  return <div className="  flex">
+
+    <div className='sidebar'>
+        <Sidebar/>
+      </div>
+      
+    <div className='px-10 py-8 max-h-screen space-y-3.5 scroll-smooth overscroll-contain overflow-scroll'>
       <div className='flex justify-between gap-2 hover:shadow-xl p-4'>
         <div className='flex space-x-3 items-center'>
           <img src={brainImage}  alt="logo" className='size-10'/> 
           <span className='text-3xl font-semibold tracking-tighter font-sans'> Brainly</span>
         </div>
         <div className='flex gap-6'>
-          <Button variant='primary' text='Add Content' startIcon={<PlusIcon/>}></Button>
+          <Button variant='primary' text='Add Content' startIcon={<PlusIcon/>} handlerClick={function() {
+            setClose(true)
+          }}></Button>
         <Button variant='secondary' text='Share Brain' startIcon={<ShareIcon/>}></Button>
         </div>
       </div>
@@ -39,6 +49,13 @@ function App() {
           console.log("loading lazy")
         }} hidden="block"/>
       </Suspense> */}
+      <AddModal open={open} onClose={function ()
+        {
+             setClose(false) 
+        }
+      } />
+    </div>
+
     </div>
 }
 

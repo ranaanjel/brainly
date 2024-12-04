@@ -9,6 +9,7 @@ interface ButtonProps {
     text : string,
     startIcon?:ReactElement,
     size?: ButtonSize,
+    handlerClick?:() => void;
 }
 
 let variantStyles:{primary:string, secondary:string} = {
@@ -18,8 +19,8 @@ let variantStyles:{primary:string, secondary:string} = {
 
 let defaultStyles = "px-4 py-2 rounded-sm font-light flex items-center gap-2 h-10"
 
-export function Button({variant, text, startIcon, size}:ButtonProps) {
-    return <button className={`${variantStyles[variant]} ${defaultStyles}`}>
+export function Button({variant, text, startIcon, size, handlerClick}:ButtonProps) {
+    return <button className={`${variantStyles[variant]} ${defaultStyles}`} onClick={handlerClick}>
         {startIcon}
         {text}
     </button>
