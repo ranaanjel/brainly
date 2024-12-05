@@ -171,7 +171,7 @@ userRouter.post("/brain/share", authMiddlewares_1.authMiddleware, function (req,
     });
 });
 //copying the particular content of others
-userRouter.get("/brain/:shareLink", authMiddlewares_1.authMiddleware, function (req, res) {
+userRouter.get("/brain/:shareLink", function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let hash = req.params.shareLink;
         let userId = req.userId;

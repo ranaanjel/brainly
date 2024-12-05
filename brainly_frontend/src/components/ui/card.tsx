@@ -1,7 +1,7 @@
 import { YtIcon } from "../icons/yt"
 import { TweetIcon } from "../icons/tweet"
 import { DocIcons } from "../icons/doc"
-import { BrowserRouter, Link} from "react-router-dom"
+import {  Link} from "react-router-dom"
 import { LinkIcon } from "../icons/links"
 import { DeleteIcons } from "../icons/delete"
 import { SkeletonDiv } from "./loadingState"
@@ -43,7 +43,6 @@ export  function Card(props:cardProps) {
                 
             </div>
             <div className="flex gap-2 items-center text-slate-400 text-xs">
-                <BrowserRouter>
                     <Link to={props.link}>
                         <span onClick={function () {
                             //console.log(props.link, "clicked clicked")
@@ -51,7 +50,6 @@ export  function Card(props:cardProps) {
                     <LinkIcon/>
                 </span>
                     </Link>
-                </BrowserRouter>
                 
                 <span className="cursor-pointer">
                     <DeleteIcons/>
@@ -89,9 +87,3 @@ export  function Card(props:cardProps) {
         </div>
     </div>
 } 
-
-//  <iframe onLoad={function() {
-//                     console.log("loading the youtube")
-//                 }} width="100%" height="100%" src={"https://www.youtube.com/embed/qF0PdgefNMY"} title="YouTube video player"  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen>
-
-//                 </iframe> 

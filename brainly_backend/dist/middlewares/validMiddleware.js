@@ -7,18 +7,19 @@ exports.inputValid = void 0;
 const zod_1 = __importDefault(require("zod"));
 var userSchema = zod_1.default.object({
     name: zod_1.default.string().min(3).max(10),
-    password: zod_1.default.string().regex(/(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&])[A-z\d!@#$%^&]{8,20}/)
+    password: zod_1.default.string().regex(/(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&])[A-z\d!@#$%^&'}{):*(]{8,20}/)
 });
 const inputValid = function (req, res, next) {
     const userBody = req.body;
     const valid = userSchema.safeParse(userBody);
+    console.log(userBody, valid);
     //console.log(userBody , "from inputvalid function")
     if (valid.success) {
         next();
         return;
     }
     res.status(411).json({
-        message: "please provide good inputs"
+        message: "please provide good inputs add the One upper one lower one digit one special [ !@#$%^&'}{):*([;] ]  with min 8 and 20 max letters"
     });
 };
 exports.inputValid = inputValid;
