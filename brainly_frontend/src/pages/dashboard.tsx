@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom'
 import { useContent } from '../components/ui/useContent'
 import { backendURL, userContentURL } from '../config'
 import axios from 'axios'
+import loadingPNG from "../assets/loading.png"
 
  function Dashboard() {
 
@@ -31,7 +32,7 @@ import axios from 'axios'
  //fetching the data here and showing it - array of content to get
   const content = useContent();
 
-  console.log(content, "empty array")
+  //console.log(content, "empty array")
 
   const [open, setClose] = useState(false)
 
@@ -54,7 +55,7 @@ import axios from 'axios'
         <Button variant='secondary' text='Share Brain' startIcon={<ShareIcon/>}></Button>
         </div>
       </div>
-      <div className='flex gap-8 flex-wrap justify-start m-auto'>
+      <div className='flex gap-8 flex-wrap justify-start m-auto '>
         {/* <Card type='yt' title='Project' link="https://www.youtube.com/watch?v=qF0PdgefNMY"/>
         <Card type="tw" title='Nerds have high IQ why though' link="https://twitter.com/NikoMcCarty/status/1863675169442557955"/> 
         <Card type="docs" title='loading state' link=""/>  */}
@@ -101,7 +102,10 @@ import axios from 'axios'
 
               }} contentId={item._id} tag={item.tag} key={index} type={item.type as cardProps["type"]} title={item.title} link={item.link} />
         })}
-
+        {content.length ==0 ? <div className='h-96 w-full flex justify-center items-end relative'>
+          <img src={loadingPNG} alt="loading" className="absolute -bottom-32" />
+        </div> :"" }
+       
       </div>
       {/* <Suspense fallback={"..loading the content"}>
         <LazyElement link="https://www.youtube.com/embed/GkS9RUi_UcQ" handler={function () {
