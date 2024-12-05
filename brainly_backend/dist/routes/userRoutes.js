@@ -88,7 +88,8 @@ var contentTypes;
     contentTypes["image"] = "image";
     contentTypes["video"] = "video";
     contentTypes["article"] = "article";
-    contentTypes["audio"] = "audio";
+    contentTypes["tweet"] = "tweet";
+    contentTypes["unknown"] = "unknown";
 })(contentTypes || (exports.contentTypes = contentTypes = {}));
 userRouter.post("/content", authMiddlewares_1.authMiddleware, tagMiddleware_1.tagMiddleware, function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -127,6 +128,7 @@ userRouter.get("/content", authMiddlewares_1.authMiddleware, function (req, res)
 userRouter.delete("/content", authMiddlewares_1.authMiddleware, function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let contentId = req.body.contentId;
+        console.log(contentId);
         let deleteContent = yield db_1.ContentModel.deleteOne({ _id: contentId, userId: req.userId });
         //console.log(contentId, req.userId, deleteContent)
         res.json({

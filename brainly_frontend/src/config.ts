@@ -4,7 +4,7 @@ export const signinURL = "/user/signin" //POST
 export const signupURL = "/user/signup" //POST
 
 //content
-export const userContentDeleteURL = "/user/content"
+export const userContentURL= "/user/content"
 //POST, GET, DELETE and auth
 
 //share links

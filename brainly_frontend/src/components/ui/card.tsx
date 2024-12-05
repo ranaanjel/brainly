@@ -7,19 +7,23 @@ import { DeleteIcons } from "../icons/delete"
 import { SkeletonDiv } from "./loadingState"
 import { ReactElement, Suspense, lazy, ComponentType, useState } from "react"
 import TWEmbed from "./TwitterEmbed"
+import { UnknownIcon } from "../icons/question"
 
-interface cardProps{
+export interface cardProps{
     title:string,
     link: string,
     tag?:string[],
     date?:Date,
-    type:"yt"| "docs"| "tw"
+    type:"yt"| "docs"| "tw"| "unknown",
+    contentId:string;
+    deleteHandler:() => void;
 }
 
 const iconsVariants = {
     "yt":<YtIcon/>,
     "tw":<TweetIcon/>,
     "docs":<DocIcons/>,
+    "unknown": <UnknownIcon/>
 
 }
 
@@ -29,7 +33,7 @@ export  function Card(props:cardProps) {
   
    const LazyYT = lazy(() => import("./YTEmbed"))
 
-
+    console.log(props.type)
     return <div className="bg-white shadow-md rounded-md border border-gray-300 w-96 h-96 min-w-64 p-4 hover:shadow-2xl">
         <div className="flex items-center justify-between ">
             {/* //title - two child -  */}
@@ -51,7 +55,7 @@ export  function Card(props:cardProps) {
                 </span>
                     </Link>
                 
-                <span className="cursor-pointer">
+                <span className="cursor-pointer" data-contentId={props.contentId} onClick={props.deleteHandler}>
                     <DeleteIcons/>
                 </span>
             </div>
@@ -71,8 +75,13 @@ export  function Card(props:cardProps) {
             {
                 props.type == "docs" && <p>{props.title}
                 <br/>
-                {props.type}
-                    <SkeletonDiv/>
+                Document Article, please link the link icon to read more on it.
+                </p>
+            }
+             {
+                props.type == "unknown" && <p>{props.title}
+                <br/>
+                type is unkown
                 </p>
             }
 

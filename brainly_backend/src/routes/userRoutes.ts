@@ -84,7 +84,8 @@ export enum contentTypes {
     image="image",
     video="video",
     article="article",
-    audio="audio"
+    tweet="tweet",
+    unknown="unknown"
 }
 
 interface contentValues {
@@ -135,6 +136,7 @@ userRouter.get("/content", authMiddleware, async function (req:Request, res:Resp
 userRouter.delete("/content", authMiddleware,async function (req:Request, res:Response) {
     
     let contentId = req.body.contentId;
+    console.log(contentId)
 
     let deleteContent = await ContentModel.deleteOne({_id:contentId, userId:req.userId})
     //console.log(contentId, req.userId, deleteContent)
