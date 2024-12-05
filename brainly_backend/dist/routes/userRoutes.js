@@ -119,7 +119,7 @@ userRouter.get("/content", authMiddlewares_1.authMiddleware, function (req, res)
         const userId = req.userId;
         const contents = yield db_1.ContentModel.find({
             userId
-        });
+        }).populate("tag");
         res.json({
             contents
         });
@@ -128,7 +128,7 @@ userRouter.get("/content", authMiddlewares_1.authMiddleware, function (req, res)
 userRouter.delete("/content", authMiddlewares_1.authMiddleware, function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let contentId = req.body.contentId;
-        console.log(contentId);
+        // console.log(contentId)
         let deleteContent = yield db_1.ContentModel.deleteOne({ _id: contentId, userId: req.userId });
         //console.log(contentId, req.userId, deleteContent)
         res.json({

@@ -54,12 +54,12 @@ import axios from 'axios'
         <Button variant='secondary' text='Share Brain' startIcon={<ShareIcon/>}></Button>
         </div>
       </div>
-      <div className='flex gap-8 flex-wrap justify-evenly'>
+      <div className='flex gap-8 flex-wrap justify-start m-auto'>
         {/* <Card type='yt' title='Project' link="https://www.youtube.com/watch?v=qF0PdgefNMY"/>
         <Card type="tw" title='Nerds have high IQ why though' link="https://twitter.com/NikoMcCarty/status/1863675169442557955"/> 
         <Card type="docs" title='loading state' link=""/>  */}
         {/* <Card type="tw" title='Nerds have high IQ why though' link="https://twitter.com/NikoMcCarty/status/1863675169442557955"/> */}
-        {content.map(function (item:{type:string, tag:string[], title:string, link:string, _id:string}, index:number) {
+        {content.map(function (item:{type:string, tag:{title:string}[], title:string, link:string, _id:string}, index:number) {
           console.log(item)
             switch (item.type) {
               case "video":
@@ -99,7 +99,7 @@ import axios from 'axios'
                   console.log(err)
                 }
 
-              }} contentId={item._id} key={index} type={item.type as cardProps["type"]} title={item.title} link={item.link} />
+              }} contentId={item._id} tag={item.tag} key={index} type={item.type as cardProps["type"]} title={item.title} link={item.link} />
         })}
 
       </div>

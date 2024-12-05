@@ -12,7 +12,7 @@ import { UnknownIcon } from "../icons/question"
 export interface cardProps{
     title:string,
     link: string,
-    tag?:string[],
+    tag?:{title:string}[],
     date?:Date,
     type:"yt"| "docs"| "tw"| "unknown",
     contentId:string;
@@ -34,7 +34,7 @@ export  function Card(props:cardProps) {
    const LazyYT = lazy(() => import("./YTEmbed"))
 
     console.log(props.type)
-    return <div className="bg-white shadow-md rounded-md border border-gray-300 w-96 h-96 min-w-64 p-4 hover:shadow-2xl">
+    return <div className="bg-white shadow-md rounded-md border border-gray-300 w-96 h-[392px] min-w-64 p-4 hover:shadow-2xl">
         <div className="flex items-center justify-between ">
             {/* //title - two child -  */}
             <div className="flex gap-3 font-serif items-center text-slate-700">
@@ -88,10 +88,17 @@ export  function Card(props:cardProps) {
         </div>
         <div>
             {/*adding tags */}
+            {props.tag?.map(item => {
+                const hashValue = item.title;
+                return <span className="rounded-lg bg-purple-600 text-white py-1 px-2 m-1">
+                    #{hashValue}
+                </span>
+            })}
         </div>
-        <div className="text-sm text-gray-400 mt-2">
+        <div className="text-sm text-gray-400 mt-2 mb-2 ">
             {/* added on which date */}
-            Added on {"..."}
+            Refetched on { (new Date()).toString().split(" ").slice(1,4).join(" ")} 
+            {/*not adding in the database - just current additional to the page*/}
 
         </div>
     </div>

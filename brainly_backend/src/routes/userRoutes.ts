@@ -125,7 +125,7 @@ userRouter.get("/content", authMiddleware, async function (req:Request, res:Resp
 
     const contents = await ContentModel.find({
         userId
-    })
+    }).populate("tag")
     
     res.json({
         contents
@@ -136,7 +136,7 @@ userRouter.get("/content", authMiddleware, async function (req:Request, res:Resp
 userRouter.delete("/content", authMiddleware,async function (req:Request, res:Response) {
     
     let contentId = req.body.contentId;
-    console.log(contentId)
+   // console.log(contentId)
 
     let deleteContent = await ContentModel.deleteOne({_id:contentId, userId:req.userId})
     //console.log(contentId, req.userId, deleteContent)
