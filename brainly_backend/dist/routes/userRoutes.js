@@ -143,13 +143,25 @@ userRouter.post("/brain/share", authMiddlewares_1.authMiddleware, function (req,
         let { share } = req.body;
         let userId = req.userId;
         try {
+            //in case already there then sending the value only
+            var resultShare = yield db_1.ShareLinkModel.findOne({
+                userId
+            });
+            if (resultShare) {
+                let URL = (req.protocol + "://" + req.get("host") + "/brain/" + resultShare.hash);
+                res.json({
+                    URL
+                });
+                console.log(URL);
+                return;
+            }
             if (share) {
                 const hash = crypto_1.default.createHash("sha256").update(userId).digest("hex");
                 const link = yield db_1.ShareLinkModel.create({
                     hash,
                     userId
                 });
-                let URL = (req.protocol + "//:" + req.get("host") + "/brain/" + link.hash);
+                let URL = (req.protocol + "://" + req.get("host") + "/brain/" + link.hash);
                 res.json({
                     URL,
                     message: "content shared"
@@ -180,6 +192,7 @@ userRouter.get("/brain/:shareLink", function (req, res) {
         let hashValue = yield db_1.ShareLinkModel.findOne({
             hash
         }).populate("userId");
+        console.log(hashValue);
         if (hashValue == null) {
             res.status(404).json({
                 message: "no such content exist"
@@ -188,7 +201,10 @@ userRouter.get("/brain/:shareLink", function (req, res) {
         }
         //@ts-ignore
         const username = hashValue.userId.name;
-        const content = yield db_1.ContentModel.find({ userId });
+        //@ts-ignore
+        const userValue = hashValue.userId._id;
+        const content = yield db_1.ContentModel.find({ userId: userValue });
+        console.log(username, userValue, content);
         res.json({
             value: {
                 username, content

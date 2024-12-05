@@ -18,11 +18,11 @@ let variantStyles:{primary:string, secondary:string} = {
     secondary:'bg-cs-purple-200  text-cs-purple-600'
 }
 
-let defaultStyles = "px-4 py-2 rounded-sm font-light flex items-center gap-2 h-10 "
+let defaultStyles = "px-4 py-2 rounded-sm font-light flex justify-center items-center gap-2 h-10 "
 
 export function Button({variant, text, startIcon, size, handlerClick, loading}:ButtonProps) {
     return <button className={`${variantStyles[variant]} ${defaultStyles} ${size == "lg" ?"w-full":""} ${loading ?"opacity-50":""}`} disabled={loading} onClick={handlerClick}>
-        {startIcon}
+         {startIcon}
         {text}
     </button>
 }

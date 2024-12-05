@@ -151,15 +151,33 @@ userRouter.delete("/content", authMiddleware,async function (req:Request, res:Re
 //sharing the particular content i.e all notes, tweets or videos and tags values
 userRouter.post("/brain/share", authMiddleware, async function (req:Request, res:Response) {
     let {share} : {share:boolean} = req.body;
-    let userId = req.userId;
+    let userId = req.userId;    
     try {
+
+    //in case already there then sending the value only
+
+    var resultShare = await ShareLinkModel.findOne({
+        userId
+    })
+    if(resultShare) {
+
+        let URL = ( req.protocol+"://"+ req.get("host")+"/brain/"+ resultShare.hash)
+        res.json({
+            URL
+        })
+        console.log(URL)
+        return;
+    }
+
+
+
     if(share) {
         const hash = crypto.createHash("sha256").update(userId as string).digest("hex");
         const link = await ShareLinkModel.create({
             hash,
             userId
         })
-        let URL = ( req.protocol+"//:"+ req.get("host")+"/brain/"+ link.hash)
+        let URL = ( req.protocol+"://"+ req.get("host")+"/brain/"+ link.hash)
         
         res.json({
             URL,
@@ -192,6 +210,8 @@ userRouter.get("/brain/:shareLink", async function (req:Request, res:Response) {
     hash
    }).populate("userId");
 
+   console.log(hashValue)
+
    if(hashValue == null) {
     res.status(404).json({
         message:"no such content exist"
@@ -201,8 +221,11 @@ userRouter.get("/brain/:shareLink", async function (req:Request, res:Response) {
 
    //@ts-ignore
    const username = hashValue.userId.name;
-   const content = await ContentModel.find({userId})
+   //@ts-ignore
+   const userValue = hashValue.userId._id;
+   const content = await ContentModel.find({userId:userValue})
 
+   console.log(username, userValue, content)
    
     res.json({
         value : {

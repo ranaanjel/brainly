@@ -14,6 +14,7 @@ import { useContent } from '../components/ui/useContent'
 import { backendURL, userContentURL } from '../config'
 import axios from 'axios'
 import loadingPNG from "../assets/loading.png"
+import { ShareModal } from '../components/ui/ShareModal'
 
  function Dashboard() {
 
@@ -35,6 +36,7 @@ import loadingPNG from "../assets/loading.png"
   //console.log(content, "empty array")
 
   const [open, setClose] = useState(false)
+  const [share, setShare] = useState(false)
 
   return <div className="flex">
 
@@ -52,7 +54,9 @@ import loadingPNG from "../assets/loading.png"
           <Button variant='primary' text='Add Content' startIcon={<PlusIcon/>} handlerClick={function() {
             setClose(true)
           }}></Button>
-        <Button variant='secondary' text='Share Brain' startIcon={<ShareIcon/>}></Button>
+        <Button variant='secondary' text='Share Brain' startIcon={<ShareIcon/>} handlerClick={function() {
+          setShare(true)
+        }}></Button>
         </div>
       </div>
       <div className='flex gap-8 flex-wrap justify-start m-auto '>
@@ -117,6 +121,9 @@ import loadingPNG from "../assets/loading.png"
              setClose(false) 
         }
       } />
+      <ShareModal open={share} onClose={function() {
+        setShare(false)
+      }}/>
     </div>
 
     </div>
