@@ -1,10 +1,10 @@
 import { CloseIcon } from "../icons/close"
 import { Button } from "./Button"
-import { MutableRefObject, useRef, useState } from "react"
+import { MutableRefObject, useRef} from "react"
 import {InputComponent} from "./input"
 import axios from "axios";
 import { backendURL, userContentURL } from "../../config";
-import { Navigate, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 interface AddModalProps {
     open:boolean,
     onClose?:() => void,
